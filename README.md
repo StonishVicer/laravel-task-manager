@@ -83,19 +83,19 @@ Route::patch('tasks/{task}/toggle-status', [TaskController::class, 'toggleStatus
 
 ## 🧠 Controller Logic (Overview)
 
-- **index**:  
+- **index**  
   - Accepts `q` (search by title) and `status` (`pending`, `completed`) as query params.  
   - Uses `ilike` for PostgreSQL-friendly case-insensitive search.  
   - Returns paginated list of tasks (`10` per page).
 
-- **store / update**:  
+- **store / update**  
   - Validates `title`, `description`, `status` using `Task::statuses()`.  
   - Redirects back with flash success messages.
 
-- **destroy**:  
+- **destroy**  
   - Deletes the task and redirects with confirmation.
 
-- **toggleStatus**:  
+- **toggleStatus**  
   - Flips between `STATUS_PENDING` and `STATUS_COMPLETED`.  
   - Redirects back to the list with a success message.
 
@@ -125,92 +125,83 @@ Implemented with **Blade** + **Bootstrap 4**:
 
 ---
 
-## 🛠️ Installation & Setup
+## 🧪 Assessment Notes
 
-### 1. Clone the Repository
+### 1. Overview of Approach
 
-```bash
-git clone https://github.com/StonishVicer/laravel-task-manager.git
-cd laravel-task-manager
-```
+I approached this task by designing a clean, maintainable Laravel application using standard framework conventions and a clear separation of concerns.  
+I implemented a full CRUD flow for tasks with server-side validation, RESTful routing, and a Bootstrap 4–based UI focused on usability and clarity.  
+The application is configured to run locally with PostgreSQL and does not rely on Docker or additional tooling, ensuring straightforward setup and portability.  
+I prioritized readable code, meaningful commit history, and a predictable project structure so that the application can be easily reviewed, extended, or maintained.
 
-### 2. Install PHP Dependencies
+### 2. Assumptions
 
-```bash
-composer install
-```
+I assumed a single-user scope with no authentication requirements, as none were specified in the instructions.  
+I also assumed that tasks would have a limited, well-defined lifecycle (`pending` and `completed`) and that simplicity and reliability were preferred over advanced abstractions.  
+Based on the submission guidelines, I optimized the environment configuration for local execution and reproducibility, favoring file-based caching and standard Laravel defaults where appropriate.
 
-### 3. Environment Setup
+### 3. Setup Instructions
 
-Copy the example file and configure it:
+1. **Clone the Repository**
 
-```bash
-cp .env.example .env
-```
+   ```bash
+   git clone https://github.com/StonishVicer/laravel-task-manager.git
+   cd laravel-task-manager
+   ```
 
-Update your `.env` for PostgreSQL:
+2. **Install PHP Dependencies**
 
-```env
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=taskmanager
-DB_USERNAME=taskuser
-DB_PASSWORD=secret
-```
+   ```bash
+   composer install
+   ```
 
-You can also update `APP_NAME`, `APP_URL`, mail, cache, etc.
+3. **Environment Configuration**
 
-### 4. Generate App Key & Run Migrations
+   ```bash
+   cp .env.example .env
+   ```
 
-```bash
-php artisan key:generate
-php artisan migrate
-```
+   Update `.env` with your PostgreSQL settings:
 
-(Optional) Seed a demo user:
+   ```env
+   DB_CONNECTION=pgsql
+   DB_HOST=127.0.0.1
+   DB_PORT=5432
+   DB_DATABASE=taskmanager
+   DB_USERNAME=taskuser
+   DB_PASSWORD=secret
+   ```
 
-```bash
-php artisan db:seed
-```
+4. **Generate App Key & Run Migrations**
 
-### 5. Frontend Assets
+   ```bash
+   php artisan key:generate
+   php artisan migrate
+   ```
 
-```bash
-npm install
-npm run dev   # or: npm run build for production
-```
+5. **Install Frontend Dependencies**
 
-### 6. Run the Development Server
+   ```bash
+   npm install
+   npm run dev   # or: npm run build for production assets
+   ```
 
-```bash
-php artisan serve
-```
+6. **Run the Development Server**
 
-Application will be available at:
+   ```bash
+   php artisan serve
+   ```
 
-```text
-http://127.0.0.1:8000
-```
+   The app will be available at:
 
----
+   ```text
+   http://127.0.0.1:8000
+   ```
 
-## 🧪 Testing
+### 4. Bonus Features
 
-Run the test suite:
-
-```bash
-php artisan test
-```
-
----
-
-## 📝 Future Improvements
-
-- Add user authentication and per-user tasks.
-- Add due dates and priority field.
-- Add REST API endpoints (JSON) for tasks.
-- Add bulk actions (complete/delete multiple tasks).
+As bonus features, I implemented an enhanced user experience for viewing long task descriptions through a large, dedicated **task details modal**.  
+This modal presents the full task information with clear visual hierarchy and accessible actions, including status toggling, editing, and deletion with confirmation, ensuring that longer descriptions remain readable without cluttering the main task list.
 
 ---
 
