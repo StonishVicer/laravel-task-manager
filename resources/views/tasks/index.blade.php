@@ -188,9 +188,11 @@
                     <form id="taskDeleteForm" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
+                        <button type="button" id="taskDeleteBtn" class="btn btn-danger" data-toggle="modal"
+                            data-target="#deleteModal" data-action="" data-title="">
                             Delete
                         </button>
+
                     </form>
                 </div>
 
@@ -228,28 +230,40 @@
 
             $('#taskTitle').text(title);
 
-            // Status badge
             if (status === 'completed') {
                 $('#taskStatusBadge').html('<span class="badge badge-success">Completed</span>');
             } else {
                 $('#taskStatusBadge').html('<span class="badge badge-warning">Pending</span>');
             }
 
-            // Description (show placeholder if empty)
             if (description.trim() === '') {
                 $('#taskDescription').html('<span class="text-muted">No description provided.</span>');
             } else {
-                // Because we escaped server-side using e(), it's safe to inject as text-like HTML
                 $('#taskDescription').text(description);
             }
 
             $('#taskMeta').text('Task #' + id);
             $('#taskTimestamps').text('Created: ' + created + ' • Last updated: ' + updated);
 
-            // Actions
             $('#taskEditLink').attr('href', editUrl);
             $('#taskToggleForm').attr('action', toggleUrl);
-            $('#taskDeleteForm').attr('action', deleteUrl);
+
+
+            $('#taskDeleteBtn')
+                .attr('data-action', deleteUrl)
+                .attr('data-title', title);
+        });
+
+        // Ensure delete confirmation modal is shown above task details modal
+        $('#taskDeleteBtn').on('click', function() {
+            // Close the task details modal first
+            $('#taskDetailsModal').modal('hide');
+        });
+
+        // Optional: when delete modal closes, clean up any leftover backdrops
+        $('#deleteModal').on('hidden.bs.modal', function() {
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
         });
     </script>
 @endpush
