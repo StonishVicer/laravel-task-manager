@@ -16,6 +16,15 @@ class TaskController extends Controller
 
         $query = Task::query()->latest();
 
+        $totalTasks = Task::count();
+        $completedTasks = Task::where('status', Task::STATUS_COMPLETED)->count();
+
+        $completionPercent = $totalTasks > 0
+            ? (int) round(($completedTasks / $totalTasks) * 100)
+            : 0;
+
+        $allCompleted = $totalTasks > 0 && $completedTasks === $totalTasks;
+
         if ($search !== '') {
             $query->where('title', 'ilike', "%{$search}%"); // Postgres-friendly
         }
@@ -26,7 +35,15 @@ class TaskController extends Controller
 
         $tasks = $query->paginate(10)->withQueryString();
 
-        return view('tasks.index', compact('tasks', 'search', 'status'));
+        return view('tasks.index', compact(
+            'tasks',
+            'search',
+            'status',
+            'totalTasks',
+            'completedTasks',
+            'completionPercent',
+            'allCompleted'
+        ));
     }
 
     public function create()

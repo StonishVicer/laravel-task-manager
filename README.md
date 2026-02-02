@@ -197,8 +197,9 @@ Based on the submission guidelines, I optimized the environment configuration fo
 
 ### 4. Bonus Features
 
-As bonus features, I implemented an enhanced user experience for viewing long task descriptions through a large, dedicated **task details modal** in the list view.  
-This modal presents the full task information with clear visual hierarchy and accessible actions, including status toggling, editing, and deletion with confirmation, ensuring that longer descriptions remain readable without cluttering the main task list.
+As bonus features, I implemented an enhanced user experience for viewing long task descriptions through a large, dedicated **task details modal** in the list view. This modal presents the full task information with clear visual hierarchy and accessible actions, including status toggling, editing, and deletion with confirmation, ensuring that longer descriptions remain readable without cluttering the main task list.
+
+Additionally, I added a dynamic **task completion progress indicator** at the top of the task list. This feature displays the number and percentage of completed tasks using a visual progress bar and shows a contextual message when all tasks are completed. The indicator updates automatically whenever tasks are created, updated, or deleted, providing immediate feedback on overall progress without adding complexity to the user flow.
 
 ---
 

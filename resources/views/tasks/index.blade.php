@@ -25,6 +25,33 @@
         </div>
     </form>
 
+    @if ($totalTasks > 0)
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="font-weight-bold">Progress</div>
+                    <div class="text-muted small">
+                        {{ $completedTasks }} / {{ $totalTasks }} tasks completed ({{ $completionPercent }}%)
+                    </div>
+                </div>
+
+                <div class="progress" style="height: 18px;">
+                    <div class="progress-bar" role="progressbar" style="width: {{ $completionPercent }}%;"
+                        aria-valuenow="{{ $completionPercent }}" aria-valuemin="0" aria-valuemax="100">
+                        {{ $completionPercent }}%
+                    </div>
+                </div>
+
+                @if ($allCompleted)
+                    <div class="alert alert-success mt-3 mb-0">
+                        <strong>All tasks completed.</strong>
+                    </div>
+                @endif
+            </div>
+        </div>
+    @endif
+
+
     <div class="card">
         <div class="card-body p-0">
             @if ($tasks->count() === 0)
