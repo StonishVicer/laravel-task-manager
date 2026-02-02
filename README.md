@@ -169,8 +169,8 @@ Based on the submission guidelines, I optimized the environment configuration fo
    DB_CONNECTION=pgsql
    DB_HOST=127.0.0.1
    DB_PORT=5432
-   DB_DATABASE=taskmanager
-   DB_USERNAME=taskuser
+   DB_DATABASE=task_manager
+   DB_USERNAME=task_user
    DB_PASSWORD=secret
    ```
 
