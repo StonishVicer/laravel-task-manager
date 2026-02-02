@@ -1,59 +1,221 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ✅ Laravel Task Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Laravel](https://img.shields.io/badge/Laravel_12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP_8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap_4-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
 
-## About Laravel
+Simple but production-ready **task manager** built with **Laravel 12**, **Blade** and **Bootstrap 4**.  
+It focuses on clean MVC structure, validation, pagination, and basic filtering with a PostgreSQL-backed persistence layer.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Tasks CRUD**: Create, edit, update and delete tasks.
+- **Status Toggle**: Quickly switch between `pending` and `completed` from the list view.
+- **Search & Filter**: Filter tasks by title and status.
+- **Pagination**: Tasks listed with server-side pagination.
+- **Validation**: Strong server-side validation for all task fields.
+- **Bootstrap UI**: Simple, responsive UI using Bootstrap 4.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🧱 Domain Model
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Task**
 
-## Laravel Sponsors
+- `id`
+- `title` (string, required, max 255)
+- `description` (text, optional)
+- `status` (`pending` or `completed`, default `pending`)
+- `created_at`, `updated_at`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Status constants are defined in the `Task` model and reused across the controller and views.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 📂 Project Structure
 
-## Contributing
+```bash
+stonishvicer-laravel-task-manager/
+├── app/
+│   ├── Http/Controllers/
+│   │   └── TaskController.php   # All task actions + status toggle
+│   ├── Models/
+│   │   └── Task.php             # Task model + status helpers
+├── database/
+│   ├── migrations/
+│   │   └── 2026_02_02_152135_create_tasks_table.php
+│   └── seeders/DatabaseSeeder.php
+├── resources/
+│   ├── views/layouts/app.blade.php   # Base layout (Bootstrap navbar)
+│   └── views/tasks/
+│       ├── index.blade.php          # List + filters + pagination
+│       ├── create.blade.php         # Create form
+│       ├── edit.blade.php           # Edit form
+│       └── _form.blade.php          # Shared form partial
+├── routes/
+│   └── web.php                      # Resource routes + toggle-status
+└── .env.example                     # Sample PostgreSQL config
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🔌 Routing
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```php
+// routes/web.php
 
-## Security Vulnerabilities
+// Redirect root to tasks
+Route::get('/', fn () => redirect()->route('tasks.index'));
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+// Resourceful CRUD (index, create, store, edit, update, destroy)
+Route::resource('tasks', TaskController::class)->except('show');
 
-## License
+// Toggle status (pending <-> completed)
+Route::patch('tasks/{task}/toggle-status', [TaskController::class, 'toggleStatus'])
+    ->name('tasks.toggle-status');
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🧠 Controller Logic (Overview)
+
+- **index**:  
+  - Accepts `q` (search by title) and `status` (`pending`, `completed`) as query params.  
+  - Uses `ilike` for PostgreSQL-friendly case-insensitive search.  
+  - Returns paginated list of tasks (`10` per page).
+
+- **store / update**:  
+  - Validates `title`, `description`, `status` using `Task::statuses()`.  
+  - Redirects back with flash success messages.
+
+- **destroy**:  
+  - Deletes the task and redirects with confirmation.
+
+- **toggleStatus**:  
+  - Flips between `STATUS_PENDING` and `STATUS_COMPLETED`.  
+  - Redirects back to the list with a success message.
+
+---
+
+## 🎨 UI & Views
+
+Implemented with **Blade** + **Bootstrap 4**:
+
+- `layouts/app.blade.php`  
+  - Top navbar with links to “Tasks” and “Create”.
+  - Global container and scripts for jQuery + Bootstrap JS.
+
+- `tasks/index.blade.php`  
+  - Search input (`q`) and status select (`all / pending / completed`).
+  - Table with:
+    - Title + truncated description.
+    - Created date.
+    - Status badge (green for completed, yellow for pending).
+    - Actions: Edit, Toggle Status, Delete (modal confirmation).
+  - Pagination links at the bottom.
+
+- `tasks/_form.blade.php`  
+  - Reused in create/edit.
+  - Fields: `title`, `description`, `status`.
+  - Displays validation errors with Bootstrap `is-invalid` and feedback.
+
+---
+
+## 🛠️ Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/StonishVicer/laravel-task-manager.git
+cd laravel-task-manager
+```
+
+### 2. Install PHP Dependencies
+
+```bash
+composer install
+```
+
+### 3. Environment Setup
+
+Copy the example file and configure it:
+
+```bash
+cp .env.example .env
+```
+
+Update your `.env` for PostgreSQL:
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=taskmanager
+DB_USERNAME=taskuser
+DB_PASSWORD=secret
+```
+
+You can also update `APP_NAME`, `APP_URL`, mail, cache, etc.
+
+### 4. Generate App Key & Run Migrations
+
+```bash
+php artisan key:generate
+php artisan migrate
+```
+
+(Optional) Seed a demo user:
+
+```bash
+php artisan db:seed
+```
+
+### 5. Frontend Assets
+
+```bash
+npm install
+npm run dev   # or: npm run build for production
+```
+
+### 6. Run the Development Server
+
+```bash
+php artisan serve
+```
+
+Application will be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## 🧪 Testing
+
+Run the test suite:
+
+```bash
+php artisan test
+```
+
+---
+
+## 📝 Future Improvements
+
+- Add user authentication and per-user tasks.
+- Add due dates and priority field.
+- Add REST API endpoints (JSON) for tasks.
+- Add bulk actions (complete/delete multiple tasks).
+
+---
+
+## 📄 License
+
+This project is open source under the **MIT License**.  
+
+Built with ❤️ using Laravel 12.
