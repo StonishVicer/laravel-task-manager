@@ -3,7 +3,6 @@
 ![Laravel](https://img.shields.io/badge/Laravel_12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP_8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap_4-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
 
 Simple but production-ready **task manager** built with **Laravel 12**, **Blade** and **Bootstrap 4**.  
@@ -18,7 +17,7 @@ It focuses on clean MVC structure, validation, pagination, and basic filtering w
 - **Search & Filter**: Filter tasks by title and status.
 - **Pagination**: Tasks listed with server-side pagination.
 - **Validation**: Strong server-side validation for all task fields.
-- **Bootstrap UI**: Simple, responsive UI using Bootstrap 4.
+- **Bootstrap UI**: Simple, responsive UI using Bootstrap 4 via CDN.
 
 ---
 
@@ -32,7 +31,7 @@ It focuses on clean MVC structure, validation, pagination, and basic filtering w
 - `status` (`pending` or `completed`, default `pending`)
 - `created_at`, `updated_at`
 
-Status constants are defined in the `Task` model and reused across the controller and views.
+Status constants are defined in the `Task` model and reused across the controller and views (`STATUS_PENDING`, `STATUS_COMPLETED`).
 
 ---
 
@@ -85,43 +84,44 @@ Route::patch('tasks/{task}/toggle-status', [TaskController::class, 'toggleStatus
 
 - **index**  
   - Accepts `q` (search by title) and `status` (`pending`, `completed`) as query params.  
-  - Uses `ilike` for PostgreSQL-friendly case-insensitive search.  
-  - Returns paginated list of tasks (`10` per page).
+  - Uses a case-insensitive search over `title`.  
+  - Returns paginated list of tasks (`10` per page) preserving the current filters.
 
 - **store / update**  
   - Validates `title`, `description`, `status` using `Task::statuses()`.  
-  - Redirects back with flash success messages.
+  - On success, redirects back to the index with flash success messages.
 
 - **destroy**  
-  - Deletes the task and redirects with confirmation.
+  - Deletes the task and redirects with a confirmation message.
 
 - **toggleStatus**  
-  - Flips between `STATUS_PENDING` and `STATUS_COMPLETED`.  
+  - Flips between `STATUS_PENDING` and `STATUS_COMPLETED` and saves the task.  
   - Redirects back to the list with a success message.
 
 ---
 
 ## 🎨 UI & Views
 
-Implemented with **Blade** + **Bootstrap 4**:
+Implemented with **Blade** + **Bootstrap 4** (via CDN).
 
 - `layouts/app.blade.php`  
-  - Top navbar with links to “Tasks” and “Create”.
-  - Global container and scripts for jQuery + Bootstrap JS.
+  - Includes Bootstrap 4 CSS and JS from CDNs.  
+  - Top navbar with links to “Tasks” and “Create”.  
+  - Global container and section for flash success messages.
 
 - `tasks/index.blade.php`  
-  - Search input (`q`) and status select (`all / pending / completed`).
+  - Search input (`q`) and status select (`all / pending / completed`).  
   - Table with:
     - Title + truncated description.
-    - Created date.
+    - Created date formatted as `Y-m-d`.
     - Status badge (green for completed, yellow for pending).
-    - Actions: Edit, Toggle Status, Delete (modal confirmation).
-  - Pagination links at the bottom.
+    - Actions: Edit, Toggle Status, Delete (confirmation modal).
+  - Pagination links using `{{ $tasks->links() }}`.
 
 - `tasks/_form.blade.php`  
-  - Reused in create/edit.
-  - Fields: `title`, `description`, `status`.
-  - Displays validation errors with Bootstrap `is-invalid` and feedback.
+  - Reused in create/edit.  
+  - Fields: `title`, `description`, `status` (options from `Task::statuses()`).  
+  - Displays validation errors with `is-invalid` and feedback blocks.
 
 ---
 
@@ -151,6 +151,8 @@ Based on the submission guidelines, I optimized the environment configuration fo
 
 2. **Install PHP Dependencies**
 
+   Make sure you have PHP 8.2+ and Composer installed, then run:
+
    ```bash
    composer install
    ```
@@ -161,7 +163,7 @@ Based on the submission guidelines, I optimized the environment configuration fo
    cp .env.example .env
    ```
 
-   Update `.env` with your PostgreSQL settings:
+   Update `.env` with your PostgreSQL settings (or your preferred database):
 
    ```env
    DB_CONNECTION=pgsql
@@ -179,14 +181,7 @@ Based on the submission guidelines, I optimized the environment configuration fo
    php artisan migrate
    ```
 
-5. **Install Frontend Dependencies**
-
-   ```bash
-   npm install
-   npm run dev   # or: npm run build for production assets
-   ```
-
-6. **Run the Development Server**
+5. **Run the Development Server**
 
    ```bash
    php artisan serve
@@ -198,9 +193,11 @@ Based on the submission guidelines, I optimized the environment configuration fo
    http://127.0.0.1:8000
    ```
 
+   No additional commands are required: all assets are loaded via CDN, so the UI works out of the box once the server is running.
+
 ### 4. Bonus Features
 
-As bonus features, I implemented an enhanced user experience for viewing long task descriptions through a large, dedicated **task details modal**.  
+As bonus features, I implemented an enhanced user experience for viewing long task descriptions through a large, dedicated **task details modal** in the list view.  
 This modal presents the full task information with clear visual hierarchy and accessible actions, including status toggling, editing, and deletion with confirmation, ensuring that longer descriptions remain readable without cluttering the main task list.
 
 ---
